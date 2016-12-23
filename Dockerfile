@@ -54,3 +54,52 @@ ADD mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
 ADD yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
+
+RUN mkdir -p /tmp/native && \
+	curl -L https://github.com/antlypls/docker-hadoop-build/releases/download/2.7.3/hadoop-native-64-2.7.3.tgz | tar -xz -C /tmp/native && \
+	rm -rf /usr/local/hadoop/lib/native && \
+	mv /tmp/native /usr/local/hadoop/lib
+
+ADD ssh_config /root/.ssh/config
+RUN chmod 600 /root/.ssh/config
+RUN chown root:root /root/.ssh/config
+
+RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
+RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
+RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
+
+RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
+RUN echo "UsePAM no" >> /etc/ssh/sshd_config
+RUN echo "Port 2122" >> /etc/ssh/sshd_config
+
+RUN /usr/sbin/sshd && \
+	$HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
+	$HADOOP_PREFIX/sbin/start-dfs.sh && \
+	$HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
+
+RUN /usr/sbin/sshd && \
+	$HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
+	$HADOOP_PREFIX/sbin/start-dfs.sh && \
+	$HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
+
+ADD bootstrap.sh /etc/bootstrap.sh
+RUN chown root:root /etc/bootstrap.sh
+RUN chmod 700 /etc/bootstrap.sh
+
+ENV BOOTSTRAP /etc/bootstrap.sh
+
+RUN rm /tmp/jdk-8u111-linux-x64.rpm
+
+# Hdfs ports
+EXPOSE 50010 50020 50070 50075 50090 8020 9000
+
+# Mapred ports
+EXPOSE 10020 19888
+
+# Yarn ports
+EXPOSE 8030 8031 8032 8033 8040 8042 8088
+
+# Other ports
+EXPOSE 49707 2122
+
+CMD ["/etc/bootstrap.sh", "-d"]
