@@ -14,15 +14,14 @@ RUN rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch
 		wget \
 		which
 
-WORKDIR /tmp
-
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
 	ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
 	ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
 	cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 RUN wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u111-b14/jdk-8u111-linux-x64.rpm && \
-	rpm -i jdk-8u111-linux-x64.rpm
+	rpm -i jdk-8u111-linux-x64.rpm && \
+	rm jdk-8u111-linux-x64.rpm
 
 ENV JAVA_HOME /usr/java/default
 ENV PATH $PATH:$JAVA_HOME/bin
@@ -82,13 +81,13 @@ RUN /usr/sbin/sshd && \
 	$HADOOP_PREFIX/sbin/start-dfs.sh && \
 	$HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
-ADD bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh
-RUN chmod 700 /etc/bootstrap.sh
+WORKDIR /usr/local/hadoop
 
-ENV BOOTSTRAP /etc/bootstrap.sh
+ADD bootstrap.sh /usr/local/src/bootstrap.sh
+RUN chown root:root /usr/local/src/bootstrap.sh
+RUN chmod 700 /usr/local/src/bootstrap.sh
 
-RUN rm /tmp/jdk-8u111-linux-x64.rpm
+ENV HADOOP_BOOTSTRAP /usr/local/src/bootstrap.sh
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
@@ -102,4 +101,4 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 # Other ports
 EXPOSE 49707 2122
 
-CMD ["/etc/bootstrap.sh", "-d"]
+ENTRYPOINT ["/usr/local/src/bootstrap.sh"]
