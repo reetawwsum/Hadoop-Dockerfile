@@ -1,3 +1,5 @@
+[![Docker Automated build](https://img.shields.io/docker/automated/reetawwsum/hadoop.svg)](https://hub.docker.com/r/reetawwsum/hadoop)
+
 # Hadoop-Dockerfile
 Dockerfile for Hadoop
 
