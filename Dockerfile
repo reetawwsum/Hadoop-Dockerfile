@@ -1,4 +1,4 @@
-FROM centos:7
+FROM reetawwsum/machine-learning
 
 MAINTAINER Reet Awwsum <reetawwsum@yahoo.com>
 
