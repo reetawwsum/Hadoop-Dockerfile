@@ -2,16 +2,12 @@ FROM reetawwsum/machine-learning
 
 MAINTAINER Reet Awwsum <reetawwsum@yahoo.com>
 
-RUN rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-	yum update -y && \
-	yum upgrade -y && \
-	yum install -y curl \
+RUN yum install -y curl \
 		openssh-clients \
 		openssh-server \
 		rsync \
 		sudo \
 		tar \
-		wget \
 		which
 
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
