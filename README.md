@@ -1,4 +1,5 @@
 [![Docker Automated build](https://img.shields.io/docker/automated/reetawwsum/hadoop.svg)](https://hub.docker.com/r/reetawwsum/hadoop)
+[![Docker Pulls](https://img.shields.io/docker/pulls/reetawwsum/hadoop.svg)](https://hub.docker.com/r/reetawwsum/hadoop)
 
 # Hadoop-Dockerfile
 Dockerfile for Hadoop
@@ -25,7 +26,7 @@ To view Hadoop process status inside hadoop container
 
 To list files in HDFS inside hadoop container
 
-	$ $HADOOP_PREFIX/bin/hadoop fs -ls
+	$ hadoop fs -ls
 
 Clone this repo and
 
