@@ -6,7 +6,7 @@ Dockerfile for Hadoop
 
 ## Features
 
-1. CentOS 7
+1. [reetawwsum/machine-learning](https://hub.docker.com/r/reetawwsum/machine-learning)
 2. Java SE Development Kit 8u111
 3. Hadoop 2.7.3
 
@@ -18,7 +18,7 @@ Pull docker image from [DockerHub](https://hub.docker.com/r/reetawwsum/hadoop)
 
 To launch Hadoop
 
-	$ docker run --rm -t -i --name hadoop -p 50070:50070 -p 8088:8088 reetawwsum/hadoop --ip=0.0.0.0
+	$ docker run --rm -t -i --name hadoop -p 50070:50070 -p 8088:8088 -p 8042:8042 reetawwsum/hadoop --ip=0.0.0.0
 
 To view Hadoop process status inside hadoop container
 
