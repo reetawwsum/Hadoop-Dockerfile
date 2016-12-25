@@ -40,6 +40,8 @@ ENV HADOOP_YARN_HOME /usr/local/hadoop
 ENV HADOOP_CONF_DIR /usr/local/hadoop/etc/hadoop
 ENV YARN_CONF_DIR /usr/local/hadoop/etc/hadoop
 
+ENV PATH $PATH:$HADOOP_PREFIX/bin
+
 RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
@@ -53,11 +55,6 @@ ADD mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
 ADD yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
-
-RUN mkdir -p /tmp/native && \
-	curl -L https://github.com/antlypls/docker-hadoop-build/releases/download/2.7.3/hadoop-native-64-2.7.3.tgz | tar -xz -C /tmp/native && \
-	rm -rf /usr/local/hadoop/lib/native && \
-	mv /tmp/native /usr/local/hadoop/lib
 
 ADD ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
